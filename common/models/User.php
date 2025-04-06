@@ -104,7 +104,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'estado_id' => self::ESTADO_ACTIVO]);
+        return static::findOne(['id' => $id, 'estado_id' => ValorHelpers::getEstadoId('Activo')]);
     }
 
     /**
@@ -122,7 +122,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'estado_id' => self::ESTADO_ACTIVO]);
+        return static::findOne(['username' => $username, 'estado_id' => ValorHelpers::getEstadoId('Activo')]);
     }
 
     /**
@@ -138,8 +138,9 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return static::findOne([
             'password_reset_token' => $token,
-            'estado_id' => self::ESTADO_ACTIVO,
+            'estado_id' => ValorHelpers::getEstadoId('Activo'),
         ]);
+        // 'estado_id' => self::ESTADO_ACTIVO
     }
 
     /**
@@ -355,4 +356,10 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->tipoUsuario ? $this->tipoUsuario->id : 'ninguno';
     }
+
+    public function generateEmailVerificationToken()
+    {
+        $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
 }
