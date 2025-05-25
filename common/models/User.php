@@ -11,6 +11,7 @@ use yii\helpers\Security;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Html;
+use common\models\ValorHelpers;
 
 use backend\models\Rol;
 use backend\models\Estado;
@@ -35,7 +36,7 @@ use frontend\models\Perfil;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const ESTADO_ACTIVO = 1;
+    //const ESTADO_ACTIVO = 1;
 
     public static function tableName()
     {
@@ -65,7 +66,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['estado_id', 'default', 'value' => self::ESTADO_ACTIVO],
+            ['estado_id', 'default', 'value' => ValorHelpers::getEstadoId('Activo')],//self::ESTADO_ACTIVO],
             ['estado_id','in', 'range'=>array_keys($this->getEstadoLista())],
             ['rol_id', 'default', 'value' => 1],
             ['rol_id','in', 'range'=>array_keys($this->getRolLista())],

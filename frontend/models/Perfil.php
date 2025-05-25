@@ -26,9 +26,9 @@ use yii\db\Expression;
  * @property Genero $genero
  * @property User $user
  */
- class Perfil extends \yii\db\ActiveRecord
+class Perfil extends \yii\db\ActiveRecord
 {
-    
+
     /**
      * {@inheritdoc}
      */
@@ -47,32 +47,32 @@ use yii\db\Expression;
             [['user_id', 'genero_id'], 'integer'],
             [['nombre', 'apellido'], 'string'],
             [['fecha_nacimiento', 'created_at', 'updated_at'], 'safe'],
-            [['fecha_nacimiento'], 'date', 'format'=>'Y-m-d'],
+            [['fecha_nacimiento'], 'date', 'format' => 'php:Y-m-d'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
             [['genero_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genero::class, 'targetAttribute' => ['genero_id' => 'id']],
-            [['genero_id'],'in', 'range'=>array_keys($this->getGeneroLista())],
+            [['genero_id'], 'in', 'range' => array_keys($this->getGeneroLista())],
         ];
     }
-     //[['fecha_nacimiento'], 'date', 'format'=>'php:Y-m-d'],
-       /**
-        * behaviors
-        */
+    //[['fecha_nacimiento'], 'date', 'format'=>'php:Y-m-d'],
+    /**
+     * behaviors
+     */
 
-        public function behaviors()
-        {
-            return [
-                'timestamp' => [
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
                 'attributes' => [
-                                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-                                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
-                                ],
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
                 'value' => new Expression('NOW()'),
-                               ],
-                   ];
-        }
+            ],
+        ];
+    }
 
-   
+
     /**
      * {@inheritdoc}
      */
@@ -116,26 +116,26 @@ use yii\db\Expression;
     /* /**
      * @return \yii\db\ActiveQuery
      */
-   
-     /**
+
+    /**
      * Devuelve el nombre del género asociado al perfil.
      *
      * @return string|null
      */
-     public function getGeneroNombre()
-     {
-         return $this->genero->genero_nombre;
-     }
+    public function getGeneroNombre()
+    {
+        return $this->genero->genero_nombre;
+    }
 
-     /**
-      * get lista de generos para lista desplegable
-      */
- 
-     public static function getGeneroLista()
-     {
-         $dropciones = Genero::find()->asArray()->all();
-         return ArrayHelper::map($dropciones, 'id', 'genero_nombre');
-     }
+    /**
+     * get lista de generos para lista desplegable
+     */
+
+    public static function getGeneroLista()
+    {
+        $dropciones = Genero::find()->asArray()->all();
+        return ArrayHelper::map($dropciones, 'id', 'genero_nombre');
+    }
 
     /**
      * @get Username
@@ -169,8 +169,19 @@ use yii\db\Expression;
 
     public function getPerfilIdLink()
     {
-        $url = Url::to(['perfil/update', 'id'=>$this->id]);
+        $url = Url::to(['perfil/update', 'id' => $this->id]);
         $opciones = [];
         return Html::a($this->id, $url, $opciones);
     }
+
+/*     public function beforeValidate()
+    {
+        if ($this->fecha_nacimiento != null) {
+
+            $nuevo_formato_fecha = date('Y-m-d', strtotime($this->fecha_nacimiento));
+            $this->fecha_nacimiento = $nuevo_formato_fecha;
+        }
+
+        return parent::beforeValidate();
+    } */
 }

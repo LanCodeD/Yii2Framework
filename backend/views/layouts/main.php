@@ -28,7 +28,7 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => "RBAC RECARGADO",//Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
@@ -39,6 +39,26 @@ AppAsset::register($this);
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+    }else
+    {
+         //Título de menú con una opción aqui agregamos el menu 
+         $menuItems[] = ['label' => 'Admon Usuarios', 'url' => ['/site/index'],
+         'options' =>['class' =>'dropdown'],
+         'template'=>'<a href="{url}" class="href_class">{label}</a>',
+         'items' =>[ ['label' => 'Usuarios', 'url' => ['/project']],
+                     ['label' => 'Perfil', 'url' => 'http://localhost/SoftwareYii2/frontend/web/index.php?r=perfil'],
+                     ['label' => 'Roles', 'url' => ['/project-user']],
+                     ],
+         ];  
+
+         $menuItems[] = ['label' => 'Transacciones', 'url' => ['/site/index'],
+         'options' =>['class' =>'dropdown'],
+         'template'=>'<a href="{url}" class="href_class">{label}</a>',
+         'items' =>[ ['label' => 'Compras', 'url' => ['/compras']],
+                     ['label' => 'Ventas', 'url' => ['/ventas']],
+                     ['label' => 'Devoluciones', 'url' => ['/devoluciones']],
+                     ],
+         ]; 
     }     
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
