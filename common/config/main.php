@@ -18,8 +18,8 @@ return [
 
             // la configuración global para el widget de los plugins de facebook
             'facebook' => [
-                'appId' => '2888418048022004',
-                'secret' => 'cc6f461a292e2614c6a6f60ef54e7ae2',
+                'appId' => '',
+                'secret' => '',
             ],
 
             // la configuración social para el widget del plugin social de google
