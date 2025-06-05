@@ -1,101 +1,149 @@
 <?php
 
-/** @var \yii\web\View $this */
-/** @var string $content */
-
 use backend\assets\AppAsset;
-use common\widgets\Alert;
-use yii\bootstrap5\Breadcrumbs;
-use yii\bootstrap5\Html;
+use yii\helpers\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
+use yii\widgets\Breadcrumbs;
+use common\models\PermisosHelpers;
+use backend\assets\FontAwesomeAsset;
+
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 
 AppAsset::register($this);
+FontAwesomeAsset::register($this);
+
 ?>
+
 <?php $this->beginPage() ?>
+
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-100">
+
+<html lang="<?= Yii::$app->language ?>">
+
 <head>
-    <meta charset="<?= Yii::$app->charset ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <?php $this->registerCsrfMetaTags() ?>
+    <meta charset="<?= Yii::$app->charset ?>" />
+
+    <meta name="viewport"
+        content="width=device-width, 
+initial-scale=1">
+
+    <?= Html::csrfMetaTags() ?>
+
     <title><?= Html::encode($this->title) ?></title>
+
     <?php $this->head() ?>
+<br>
+<br>
+<br>
+<br>
 </head>
-<body class="d-flex flex-column h-100">
-<?php $this->beginBody() ?>
 
-<header>
-    <?php
-    NavBar::begin([
-        'brandLabel' => "RBAC RECARGADO",//Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    }else
-    {
-         //Título de menú con una opción aqui agregamos el menu 
-         $menuItems[] = ['label' => 'Admon Usuarios', 'url' => ['/site/index'],
-         'options' =>['class' =>'dropdown'],
-         'template'=>'<a href="{url}" class="href_class">{label}</a>',
-         'items' =>[ ['label' => 'Usuarios', 'url' => ['/project']],
-                     ['label' => 'Perfil', 'url' => 'http://localhost/SoftwareYii2/frontend/web/index.php?r=perfil'],
-                     ['label' => 'Roles', 'url' => ['/project-user']],
-                     ],
-         ];  
+<body>
+    <?php $this->beginBody() ?>
 
-         $menuItems[] = ['label' => 'Transacciones', 'url' => ['/site/index'],
-         'options' =>['class' =>'dropdown'],
-         'template'=>'<a href="{url}" class="href_class">{label}</a>',
-         'items' =>[ ['label' => 'Compras', 'url' => ['/compras']],
-                     ['label' => 'Ventas', 'url' => ['/ventas']],
-                     ['label' => 'Devoluciones', 'url' => ['/devoluciones']],
-                     ],
-         ]; 
-    }     
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-        'items' => $menuItems,
-    ]);
-    if (Yii::$app->user->isGuest) {
-        echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
-    } else {
-        echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout text-decoration-none']
-            )
-            . Html::endForm();
-    }
-    NavBar::end();
-    ?>
-</header>
+    <div class="wrap">
 
-<main role="main" class="flex-shrink-0">
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+
+        <?php
+        if (!Yii::$app->user->isGuest) {
+
+            $es_admin = PermisosHelpers::requerirMinimoRol('Admin');
+
+            NavBar::begin([
+
+                'brandLabel' => 'Yii 2 Build <i class="fa fa-plug"></i> Admin',
+                'brandUrl' => Yii::$app->homeUrl,
+                'options' => [
+                    'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+                ],
+            ]);
+        } else {
+
+            NavBar::begin([
+
+                'brandLabel' => 'Yii 2 Build <i class="fa fa-plug"></i>',
+                'brandUrl' => Yii::$app->homeUrl,
+                'options' => [
+                    'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+                ],
+            ]);
+
+
+
+            $menuItems = [
+                ['label' => 'Home', 'url' => ['site/index']],
+            ];
+        }
+
+        if (!Yii::$app->user->isGuest && $es_admin) {
+
+            $menuItems[] = ['label' => 'Usuarios', 'url' => ['user/index']];
+
+            $menuItems[] = ['label' => 'Perfiles', 'url' => ['perfil/index']];
+
+            $menuItems[] = ['label' => 'Roles', 'url' => ['rol/index']];
+
+            $menuItems[] = ['label' => 'Tipos de Usuario', 'url' => ['tipo-usuario/index']];
+
+            $menuItems[] = ['label' => 'Estados', 'url' => ['estado/index']];
+        }
+
+        if (Yii::$app->user->isGuest) {
+
+            $menuItems[] = ['label' => 'Login', 'url' => ['site/login']];
+        } else {
+
+            $menuItems[] = [
+                'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+                'url' => ['/site/logout'],
+                'linkOptions' => ['data-method' => 'post']
+            ];
+        }
+
+        echo Nav::widget([
+
+            'options' => ['class' => 'navbar-nav navbar-right'],
+            'items' => $menuItems,
+
+        ]);
+        NavBar::end();
+        ?>
+
+
+        <div class="container">
+
+            <?= Breadcrumbs::widget([
+
+                'links' => isset($this->params['breadcrumbs']) ?
+                    $this->params['breadcrumbs'] : [],
+
+            ]) ?>
+
+            <?= $content ?>
+
+        </div>
     </div>
-</main>
 
-<footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
-        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end"><?= Yii::powered() ?></p>
-    </div>
-</footer>
+    <footer class="footer">
 
-<?php $this->endBody() ?>
+        <div class="container">
+
+            <p class="pull-left">&copy; Yii 2 Build <?= date('Y') ?></p>
+
+            <p class="pull-right"><?= Yii::powered() ?></p>
+
+        </div>
+
+    </footer>
+
+    <?php $this->endBody() ?>
+
 </body>
+
 </html>
-<?php $this->endPage();
+
+<?php $this->endPage() ?>

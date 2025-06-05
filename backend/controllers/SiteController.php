@@ -8,6 +8,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+use common\models\PermisosHelpers;
 
 /**
  * Site controller
@@ -21,21 +22,31 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                'class' => AccessControl::className(),
                 'rules' => [
                     [
                         'actions' => ['login', 'error'],
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['index'],
                         'allow' => true,
                         'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return PermisosHelpers::requerirMinimoRol('Admin')
+                                && PermisosHelpers::requerirEstado('Activo');
+                        }
+                    ],
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+
                     ],
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::class,
+                'class' => VerbFilter::className(),
                 'actions' => [
                     'logout' => ['post'],
                 ],
